@@ -15,12 +15,12 @@ pub(crate) fn create_app() -> Application {
 
     if Path::new(&get_path()).exists() {
         if check_used() {
-            set_status(&app, &model::Status::Active);
+            set_status(&app, model::Status::Active);
         } else {
-            set_status(&app, &model::Status::On);
+            set_status(&app, model::Status::On);
         }
     } else {
-        set_status(&app, &model::Status::Off);
+        set_status(&app, model::Status::Off);
     }
 
     app.add_menu_item(&"Print a thing".to_string(), |_| {
@@ -64,25 +64,21 @@ pub(crate) fn watch_events(inotify: &mut Inotify, app: &Application) {
 
         for event in events {
             if filter_event(&event, Option::Some(EventMask::CREATE)) {
-                set_status(&app, &model::Status::On);
+                set_status(&app, model::Status::On);
             } else if filter_event(&event, Option::Some(EventMask::DELETE)) {
-                set_status(&app, &model::Status::Off);
+                set_status(&app, model::Status::Off);
             } else if filter_event(&event, Option::Some(EventMask::CLOSE_WRITE)) {
-                set_status(&app, &model::Status::On);
+                set_status(&app, model::Status::On);
             } else if filter_event(&event, Option::None) && check_used() {
-                set_status(&app, &model::Status::Active);
+                set_status(&app, model::Status::Active);
             }
         }
     }
 }
 
-fn set_status(app: &Application, s: &model::Status) {
-    let image = match s {
-        model::Status::Off => "/dev/null",
-        model::Status::On => "img/cameramonitor_off.png",
-        model::Status::Active => "img/cameramonitor_on.png"
-    };
-    app.set_icon_from_file(&image.to_string()).ok();
+fn set_status(app: &Application, s: model::Status) {
+    let icon = model::get_icon(s);
+    app.set_icon_from_file(&icon.to_string()).ok();
 }
 
 fn check_used() -> bool {
@@ -94,7 +90,7 @@ fn check_used() -> bool {
 }
 
 fn filter_event(event: &Event<&OsStr>, event_mask: Option<EventMask>) -> bool {
-    event_mask.map(|v| event.mask.contains(v)).unwrap_or_else(|| false) &&
+    event_mask.map(|v| event.mask.contains(v)).unwrap_or_else(|| true) &&
         event.name.filter(|s| s.to_os_string() == model::PATH_FILE).is_some()
 }
 
