@@ -1,6 +1,6 @@
 use std::ffi::OsStr;
 use std::path::Path;
-use std::process::{Command, exit};
+use std::process::Command;
 
 use inotify::{Event, EventMask, Inotify, WatchMask};
 use systray::Application;
@@ -26,13 +26,6 @@ pub(crate) fn create_app() -> Application {
     let message = format!("Video device: {}", &get_path().to_string());
 
     app.add_menu_item(&message, |_| ()).ok();
-    app.add_menu_separator().ok();
-    app.add_menu_item(&"Quit".to_string(), |window| {
-        window.quit();
-        exit(0);
-    }).ok();
-
-    app.wait_for_message();
 
     app
 }
