@@ -10,7 +10,7 @@ pub(crate) enum Status {
 pub(crate) fn get_icon(s: Status) -> &'static str {
     match s {
         Status::Off => "/dev/null",
-        Status::On => "img/cameramonitor_on.svg",
-        Status::Active => "img/cameramonitor_active.svg"
+        Status::On => "/usr/share/cameramonitor/img/cameramonitor_on.svg",
+        Status::Active => "/usr/share/cameramonitor/img/cameramonitor_active.svg"
     }
 }
