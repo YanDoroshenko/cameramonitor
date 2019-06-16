@@ -1,0 +1,10 @@
+[package]
+name = "cameramonitor-quiet"
+version = "0.1.0"
+authors = ["Yan Doroshenko <yandoroshenko@protonmail.com>"]
+edition = "2018"
+
+[dependencies]
+systray = "0.3.0"
+dbus = "0.6.4"
+inotify = "0.7"
