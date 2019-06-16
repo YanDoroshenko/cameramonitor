@@ -1,9 +1,9 @@
+use std::ffi::OsStr;
 use std::path::Path;
 use std::process::Command;
 
-use inotify::{EventMask, Inotify, WatchMask, Event};
+use inotify::{Event, EventMask, Inotify, WatchMask};
 use systray::Application;
-use std::ffi::OsStr;
 
 mod model;
 
@@ -37,25 +37,7 @@ pub(crate) fn create_app() -> Application {
         window.quit();
     }).ok();
 
-    return app;
-}
-
-pub(crate) fn set_status(app: &Application, s: &model::Status) {
-    let image = match s {
-        model::Status::Off => "/dev/null",
-        model::Status::On => "img/cameramonitor_off.png",
-        model::Status::Active => "img/cameramonitor_on.png"
-    };
-    app.set_icon_from_file(&image.to_string()).ok();
-}
-
-pub(crate) fn check_used() -> bool {
-    let output = Command::new("fuser")
-        .arg(get_path())
-        .output()
-        .expect("no fuser?");
-
-    return output.status.success() && !output.stdout.is_empty();
+    app
 }
 
 pub(crate) fn create_inotify() -> Inotify {
@@ -69,7 +51,7 @@ pub(crate) fn create_inotify() -> Inotify {
         )
         .expect("Failed to add inotify watch");
 
-    return inotify;
+    inotify
 }
 
 pub(crate) fn watch_events(inotify: &mut Inotify, app: &Application) {
@@ -94,7 +76,24 @@ pub(crate) fn watch_events(inotify: &mut Inotify, app: &Application) {
     }
 }
 
-pub(crate) fn filter_event(event: &Event<&OsStr>, event_mask: Option<EventMask>) -> bool {
+fn set_status(app: &Application, s: &model::Status) {
+    let image = match s {
+        model::Status::Off => "/dev/null",
+        model::Status::On => "img/cameramonitor_off.png",
+        model::Status::Active => "img/cameramonitor_on.png"
+    };
+    app.set_icon_from_file(&image.to_string()).ok();
+}
+
+fn check_used() -> bool {
+    let output = Command::new("fuser")
+        .arg(&get_path())
+        .output()
+        .expect("no fuser?");
+    output.status.success() && !output.stdout.is_empty()
+}
+
+fn filter_event(event: &Event<&OsStr>, event_mask: Option<EventMask>) -> bool {
     event_mask.map(|v| event.mask.contains(v)).unwrap_or_else(|| false) &&
         event.name.filter(|s| s.to_os_string() == model::PATH_FILE).is_some()
 }
