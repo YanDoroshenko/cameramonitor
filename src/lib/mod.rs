@@ -59,7 +59,7 @@ pub(crate) fn watch_events(inotify: &mut Inotify, app: &Application) {
 
     loop {
         let events = inotify
-            .read_events(&mut buffer)
+            .read_events_blocking(&mut buffer)
             .expect("Failed to read inotify events");
 
         for event in events {
