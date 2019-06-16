@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.3
+Encoding=UTF-8
+Name=Camera Monitor Quiet
+Exec=
+Terminal=false
+Icon=/usr/share/cameramonitor-quiet/work-hours-counter.png
+Type=Application
+Categories=Application;System;
