@@ -4,6 +4,6 @@ Encoding=UTF-8
 Name=Camera Monitor Quiet
 Exec=cameramonitor-quiet
 Terminal=false
-Icon=/usr/share/cameramonitor-quiet/work-hours-counter.png
+Icon=/usr/share/cameramonitor-quiet/img/cameramonitor.svg
 Type=Application
 Categories=Application;System;
